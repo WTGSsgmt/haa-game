@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { ref, set, onValue, update, get } from 'firebase/database';
-import { db } from '../logic/firebase';
+import { signInAnonymously } from 'firebase/auth'; // [NEW]
+import { db, auth } from '../logic/firebase'; // [NEW]
 import { GameState, Player, Vote } from '../logic/types';
 import { assignRoles, calculateScores } from '../logic/gameOps';
 
@@ -21,6 +22,13 @@ export const useMultiplayerGame = () => {
     const [roomId, setRoomId] = useState<string | null>(null);
     const [myPlayerId, setMyPlayerId] = useState<string | null>(null);
     const [isHost, setIsHost] = useState(false);
+
+    // Initial Auth
+    useEffect(() => {
+        signInAnonymously(auth).catch((error) => {
+            console.error("Auth failed", error);
+        });
+    }, []);
 
     // Game State (Synced from Firebase)
     const [gameState, setGameState] = useState<GameState>({
