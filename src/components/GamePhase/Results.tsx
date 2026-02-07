@@ -7,9 +7,10 @@ interface ResultsProps {
     votes: Vote[];
     onNextRound: () => void;
     onReset: () => void;
+    isHost: boolean;
 }
 
-export const Results: React.FC<ResultsProps> = ({ players, votes, onNextRound, onReset }) => {
+export const Results: React.FC<ResultsProps> = ({ players, votes, onNextRound, onReset, isHost }) => {
     // Sort players by score
     const sortedPlayers = [...players].sort((a, b) => b.score - a.score);
 
@@ -73,14 +74,27 @@ export const Results: React.FC<ResultsProps> = ({ players, votes, onNextRound, o
                 </div>
             </div>
 
-            <div className="flex gap-4">
-                <Button onClick={onReset} variant="secondary" className="flex-1">
-                    タイトルへ
-                </Button>
-                <Button onClick={onNextRound} className="flex-1">
-                    次のゲームへ
-                </Button>
-            </div>
+            {isHost ? (
+                <div className="flex gap-4">
+                    <Button onClick={onReset} variant="secondary" className="flex-1">
+                        タイトルへ
+                        <span className="block text-[10px] opacity-70">全員のスコアをリセット</span>
+                    </Button>
+                    <Button onClick={onNextRound} className="flex-1">
+                        次のゲームへ
+                        <span className="block text-[10px] opacity-70">スコアを引き継ぐ</span>
+                    </Button>
+                </div>
+            ) : (
+                <div className="text-center space-y-4">
+                    <div className="text-slate-400 animate-pulse">
+                        ホストが次の操作を選択中...
+                    </div>
+                    <Button onClick={() => window.location.reload()} variant="secondary" className="w-full text-sm">
+                        退出する
+                    </Button>
+                </div>
+            )}
         </div>
     );
 };

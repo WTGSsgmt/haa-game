@@ -4,9 +4,10 @@ import { Button } from './Button';
 interface LobbyProps {
     onCreateRoom: (playerName: string) => void;
     onJoinRoom: (roomId: string, playerName: string) => void;
+    isAuthenticated: boolean;
 }
 
-export const Lobby: React.FC<LobbyProps> = ({ onCreateRoom, onJoinRoom }) => {
+export const Lobby: React.FC<LobbyProps> = ({ onCreateRoom, onJoinRoom, isAuthenticated }) => {
     const [name, setName] = useState('');
     const [roomId, setRoomId] = useState('');
     const [mode, setMode] = useState<'MENU' | 'JOIN'>('MENU');
@@ -25,6 +26,16 @@ export const Lobby: React.FC<LobbyProps> = ({ onCreateRoom, onJoinRoom }) => {
             console.error(e);
         }
     };
+
+    if (!isAuthenticated) {
+        return (
+            <div className="flex flex-col h-full justify-center items-center space-y-4 animate-fade-in p-4 text-center">
+                <div className="animate-spin text-4xl mb-4">🔐</div>
+                <p className="text-slate-400">認証中...</p>
+                <p className="text-xs text-slate-600">接続を待機しています</p>
+            </div>
+        );
+    }
 
     return (
         <div className="flex flex-col h-full justify-center items-center space-y-8 animate-fade-in p-4">

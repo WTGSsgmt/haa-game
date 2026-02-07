@@ -18,7 +18,8 @@ function App() {
     startTurnVoting,
     submitMyVote,
     nextRound,
-    resetGame
+    resetGame,
+    isAuthenticated
   } = useMultiplayerGame();
 
   const { phase, players, currentPlayerIndex, votes } = gameState;
@@ -27,7 +28,7 @@ function App() {
   if (!roomId || !myPlayerId) {
     return (
       <Layout>
-        <Lobby onCreateRoom={createRoom} onJoinRoom={joinRoom} />
+        <Lobby onCreateRoom={createRoom} onJoinRoom={joinRoom} isAuthenticated={isAuthenticated} />
       </Layout>
     );
   }
@@ -62,6 +63,7 @@ function App() {
           votes={votes}
           onNextRound={nextRound}
           onReset={resetGame}
+          isHost={isHost}
         />
       )}
 

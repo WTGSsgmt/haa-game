@@ -33,7 +33,7 @@ export const assignRoles = (players: Player[]): Player[] => {
 };
 
 export const calculateScores = (players: Player[], votes: Vote[]): Player[] => {
-    const newPlayers = players.map(p => ({ ...p, score: 0 })); // Reset round score? Or accumulate? Usually accumulate.
+    const newPlayers = players.map(p => ({ ...p })); // Keep existing score
     // For this implementation let's assume 'score' tracks total game score. 
     // But here we might just return the *added* score or update the player object.
     // Let's simple add to existing score.

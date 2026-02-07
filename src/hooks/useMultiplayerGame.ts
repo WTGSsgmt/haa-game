@@ -22,12 +22,22 @@ export const useMultiplayerGame = () => {
     const [roomId, setRoomId] = useState<string | null>(null);
     const [myPlayerId, setMyPlayerId] = useState<string | null>(null);
     const [isHost, setIsHost] = useState(false);
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
 
     // Initial Auth
     useEffect(() => {
-        signInAnonymously(auth).catch((error) => {
-            console.error("Auth failed", error);
+        // Build obfuscation might prefer not using onAuthStateChanged directly if possible, 
+        // but it is the standard way.
+        const unsubscribe = auth.onAuthStateChanged((user) => {
+            if (user) {
+                setIsAuthenticated(true);
+            } else {
+                signInAnonymously(auth).catch((error) => {
+                    console.error("Auth failed", error);
+                });
+            }
         });
+        return () => unsubscribe();
     }, []);
 
     // Game State (Synced from Firebase)
@@ -205,9 +215,9 @@ export const useMultiplayerGame = () => {
 
     const nextRound = () => {
         if (!roomId || !isHost) return;
-        // Reset for next game
-        const playersWithRoles = assignRoles(gameState.players.map(p => ({ ...p, score: 0 }))); // Reset scores? Or keep?
-        // Usually keep scores? Let's reset scores for "New Game"
+
+        // Keep scores for the next round
+        const playersWithRoles = assignRoles(gameState.players);
 
         update(ref(db, `rooms/${roomId}/gameState`), {
             phase: 'ACTING',
@@ -219,8 +229,13 @@ export const useMultiplayerGame = () => {
 
     const resetGame = () => {
         if (!roomId || !isHost) return;
+
+        // Reset scores for a fresh game
+        const resetPlayers = gameState.players.map(p => ({ ...p, score: 0 }));
+
         update(ref(db, `rooms/${roomId}/gameState`), {
             phase: 'SETUP',
+            players: resetPlayers,
             votes: [],
             currentPlayerIndex: 0
         });
@@ -238,6 +253,7 @@ export const useMultiplayerGame = () => {
         startTurnVoting,
         submitMyVote, // Replaces submitTurnVotes (which handled logic locally)
         nextRound,
-        resetGame
+        resetGame,
+        isAuthenticated
     };
 };
