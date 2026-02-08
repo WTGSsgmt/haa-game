@@ -7,9 +7,9 @@ import { assignRoles, calculateScores } from '../logic/gameOps';
 
 // Helper to generate a short room ID (e.g., 4 uppercase letters)
 const generateRoomId = () => {
-    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    const chars = '0123456789';
     let result = '';
-    for (let i = 0; i < 4; i++) {
+    for (let i = 0; i < 3; i++) {
         result += chars.charAt(Math.floor(Math.random() * chars.length));
     }
     return result;

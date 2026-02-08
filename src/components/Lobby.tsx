@@ -85,14 +85,16 @@ export const Lobby: React.FC<LobbyProps> = ({ onCreateRoom, onJoinRoom, isAuthen
                             <label className="block text-xs text-slate-500 mb-1 ml-1">ルームID</label>
                             <input
                                 type="text"
+                                pattern="\d*"
+                                inputMode="numeric"
                                 value={roomId}
-                                onChange={(e) => setRoomId(e.target.value.toUpperCase())}
-                                placeholder="ABCD"
-                                maxLength={4}
-                                className="w-full bg-slate-800 border-slate-700 rounded-lg p-3 text-center text-2xl font-bold tracking-widest text-white focus:ring-2 focus:ring-blue-500 outline-none uppercase"
+                                onChange={(e) => setRoomId(e.target.value.replace(/\D/g, '').slice(0, 3))}
+                                placeholder="000"
+                                maxLength={3}
+                                className="w-full bg-slate-800 border-slate-700 rounded-lg p-3 text-center text-2xl font-bold tracking-widest text-white focus:ring-2 focus:ring-blue-500 outline-none"
                             />
                         </div>
-                        <Button onClick={handleJoin} disabled={!name || roomId.length < 4} fullWidth>
+                        <Button onClick={handleJoin} disabled={!name || roomId.length < 3} fullWidth>
                             参加する
                         </Button>
                         <button
